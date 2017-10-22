@@ -23,7 +23,7 @@ class Student(Person):
 	def dropCourse(self, course):
 		if course in self.courses:
 			self.courses.remove(course)
-			print("A changed has been made..")
+			print("The course has been removed..")
 		else:
 			print("Nothing changed..")
 
@@ -49,15 +49,9 @@ if __name__ == '__main__':
 	print("courses []")										# courses []
 	print("set names and courses")							# set names and courses
 	print("Student: ", s1)									# s1 Student Umber T.
+	# student.addCourse('cisw 18')
 	print("courses: ", student.getCourses())				# s1 added, courses ['cisw 24', 'cisb 11']
 	print("Student: ", s2)									# s2 student Tony Montana
-	student.addCourse('cisb 31')							
+	student.addCourse('cisw 31')							
 	print("courses: ", student.getCourses())				# s2 courses ['cisw 24', 'cisb 11', 'cisb 31']			
-	student.dropCourse('cisb 11')							# s2 dropped, courses ['cisw 24', 'cisb 31']
-	print("dropped, courses: ", student.getCourses())
-
-
-
-
-
-
+	print("Dropped: ", student.dropCourse('cisb 11'))
