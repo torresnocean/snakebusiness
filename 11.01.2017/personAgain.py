@@ -12,3 +12,13 @@ class Person:
 		
 	def getLastName(self):
 		return self.last_name
+
+	def setFn(self, fn):
+		self.fn = fn
+
+	def setLn(self, ln):
+		self.ln = ln
+
+	def setName(self, fn, ln):
+		self.fn = fn
+		self.ln = ln
