@@ -49,7 +49,7 @@ if __name__ == '__main__':
 	obj2 = Person("Johnny", "Bravo")	# constructed Person with explicit arguments Johnny Bravo
 	print(obj2)
 
-print("----------------------------------PERSON CLASS ABOVE THIS LINE--------------------------------")
+print("---------------------------PERSON CLASS ABOVE THIS LINE------------------------")
 
 
 
