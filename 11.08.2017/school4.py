@@ -1,10 +1,10 @@
-import shelve
 #open db
 #read and print all key/value pairs
 #change objects
 #save our changes
+import shelve
 
-dbName = input('db name: ')
+dbName = input('Database name: ')
 db = shelve.open(dbName)
 
 #now db should be open and ready to use
@@ -12,23 +12,22 @@ db = shelve.open(dbName)
 for i in sorted(db):
 	print(i, '->', db[i])
 
-changeKey = input('key for record that we want to change: ')
+changeKey = input('Key of record to change: ')
 
 s = db[changeKey]
-
-fn = input('new fn: ')
-ln = input('new ln: ')
 
 # s.setFn(fn)
 # s.setLn(ln)
 
-save = input('Save new info? y/n')
+save = input('Modify record? y/n')
 
 if save == 'y':
-	s.setName(fn, ln)
+	fn = input('new fn: ')
+	ln = input('new ln: ')
+	s.setNewStudent(fn, ln)
 	db[changeKey] = s
-
-
-print(s)
+	print(s)
+else:
+	print('Changes were not saved')
 
 db.close()
