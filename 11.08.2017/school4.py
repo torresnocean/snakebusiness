@@ -22,9 +22,13 @@ ln = input('new ln: ')
 # s.setFn(fn)
 # s.setLn(ln)
 
-s.setName(fn, ln)
-print(s)
+save = input('Save new info? y/n')
 
-db[changeKey] = s
+if save == 'y':
+	s.setName(fn, ln)
+	db[changeKey] = s
+
+
+print(s)
 
 db.close()
