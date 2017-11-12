@@ -24,6 +24,10 @@ save = input('Modify record? y/n')
 if save == 'y':
 	fn = input('new fn: ')
 	ln = input('new ln: ')
+	mod_courses = input('Modify courses for ' + fn + ' ? y/n..')
+	if mod_courses == 'y':
+		for i in db:
+			print(db[s.courses[i]])
 	s.setNewStudent(fn, ln)
 	db[changeKey] = s
 	print(s)

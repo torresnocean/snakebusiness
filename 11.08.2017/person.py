@@ -13,12 +13,8 @@ class Person:
 	def getLastName(self):
 		return self.last_name
 
-	def setFn(self, fn):
-		self.fn = fn
-
-	def setLn(self, ln):
-		self.ln = ln
-
 	def setNewStudent(self, fn, ln):
-		self.fn = fn
-		self.ln = ln
+		self.first_name = fn
+		self.last_name = ln
+
+	
