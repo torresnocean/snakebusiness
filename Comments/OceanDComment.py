@@ -15,7 +15,7 @@ class Comment:
 
 	def setTimeStamp(self):
 		self.timeStamp = strftime("%a, %d %b %Y %H:%M:%S")
-# "PST" refers to the Pacific time zone. So you will have to use the time.settz() function appropriately.
+# "PST" refers to the Pacific time zone. So you will have to use the time.settz() function appropriately. (Still not done with this)
 
 	def getId(self):
 		return self.commentId
