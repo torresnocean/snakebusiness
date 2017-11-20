@@ -3,7 +3,7 @@
 # CISW 24
 # This is a comment class used to generate a timestamp, content and ID
 
-from time import strftime
+from time import strftime, gmtime
 
 class Comment:
 
@@ -14,8 +14,7 @@ class Comment:
 		self.content = content
 
 	def setTimeStamp(self):
-		self.timeStamp = strftime("%a, %d %b %Y %H:%M:%S")
-# "PST" refers to the Pacific time zone. So you will have to use the time.settz() function appropriately. (Still not done with this)
+		self.timeStamp = strftime("%a %b %d %Y %H:%M:%S %Z", gmtime())
 
 	def getId(self):
 		return self.commentId
