@@ -1,10 +1,11 @@
 # Humberto Torres
-# 11/18/2017
+# 11/19/2017
 # CISW 24
 # Program 5
 
-# Creating a class Comment to print out an ID, content, and timestamp.. 
-from time import strftime
+# Creating a class Comment to print out the unique ID, content, and timestamp.. 
+import os
+import time
 
 class Comment:
 
@@ -15,9 +16,10 @@ class Comment:
 	def setContent(self, content):
 		self.content = content
 
-# I used 1 argument (time_stamp) and it worked..
-	def setTimeStamp(self, time_stamp):
-		self.time_stamp =  strftime('%A, %b. %d %Y   %H:%M:%S %Z')
+	def setTimeStamp(self):
+		os.environ['TZ'] = 'US/Pacific'
+		time.tzset()
+		self.time_stamp =  time.strftime('%a %b %d %Y %H:%M:%S %Z')
 	
 # The getter..
 	def getId(self):
@@ -36,16 +38,15 @@ if __name__ == '__main__':
 # Testing the unique 'id'
 	obj.setId(10)
 	print('Unique Id:', obj.getId())
-	print()
+	print()		# New line..
 
 # Testing the 'content'
 	obj.setContent('[This test content] is the content.')
 	print(obj.getContent())
-	print()
+	print()		# New line..
 
 # Testing the 'time stamp'
-# On the obj.setTimeStamp, i gave it an empty space ('')
-	obj.setTimeStamp('')
+	obj.setTimeStamp()
 	print('What time is it? -> ' + obj.getTimeStamp())
 
 
