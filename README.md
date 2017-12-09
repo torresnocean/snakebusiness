@@ -10,3 +10,6 @@ So far we have 3 students:
 -Kevin Dang
 -Daniel Ocean
 
+We have started work on the final project, master branch contains changes from all users 
+who are participating.
+
