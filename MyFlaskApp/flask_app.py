@@ -39,7 +39,7 @@ def index():
 
     comments = Comment(content=request.form["contents"])
     db.session.add(comment)
-    adb.session.commit()
+    db.session.commit()
 
     return redirect(url_for('index'))
 
