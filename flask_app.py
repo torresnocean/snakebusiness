@@ -1,0 +1,112 @@
+from datetime import datetime
+from flask import Flask, redirect, render_template, request, url_for
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import login_user, LoginManager, UserMixin, logout_user, login_required, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
+#import time
+#import os
+
+app = Flask(__name__)
+app.config["DEBUG"] = True
+
+# configuring db connection..
+SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
+    username="htorres6",
+    password="chula_1-2-3",
+    hostname="htorres6.mysql.pythonanywhere-services.com",
+    databasename="htorres6$comments",
+)
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
+
+app.secret_key = "My Mt.sac username"
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+class User(UserMixin):
+
+    def __init__(self, username, password_hash):
+        self.username = username
+        self.password_hash = password_hash
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def get_id(self):
+        return self.username
+
+all_users = {
+    "htorres6": User("htorres6", generate_password_hash("umber")),
+    "python": User("python", generate_password_hash("cisw24")),
+    "guest": User("guest", generate_password_hash("guest")),
+    }
+
+@login_manager.user_loader
+def load_user(user_id):
+    return all_users.get(user_id)
+
+class Comment(db.Model):
+    __tablename__ = "comments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String(4096))
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "GET":
+        return render_template("index.html", comments=Comment.query.all(), timestamp=datetime.now())
+
+    if not current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    comment = Comment(content=request.form["contents"])
+    db.session.add(comment)
+    db.session.commit()
+
+    return redirect(url_for('index'))
+
+@app.route("/login_page/", methods=["GET", "POST"])
+def login():
+    if request.method == "GET":
+        return render_template("login_page.html", error=False)
+
+    username = request.form["username"]
+    if username not in all_users:
+        return render_template("login_page.html", error=True)
+    user = all_users[username]
+
+    if not user.check_password(request.form["password"]):
+        return render_template("login_page.html", error=True)
+
+    login_user(user)
+    return redirect(url_for('index'))
+
+
+@app.route("/logout/")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+
+
+
+# END OF FILE..
+
+
+
+#if __name__ == '__main__':
+
+
+    # else:
+    #     comment = Comment()
+    #     comment.content = request.form['fieldComment']
+    #     os.environ['TZ'] = 'US/Pacific'
+    #     time.tzset()
+    #     comment.timestamp = time.strftime("%a %b %d %Y", time.localtime()
+    #     db.session.add(comment)
+    #     db.session.commit()
+    #return get_post
