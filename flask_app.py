@@ -1,13 +1,18 @@
 from datetime import datetime
 from flask import Flask, redirect, render_template, request, url_for
+from flask_sslify import SSLify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from flask_login import login_user, LoginManager, UserMixin, logout_user, login_required, current_user
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
+
 #import time
 #import os
 
 app = Flask(__name__)
+sslify = SSLify(app)
 app.config["DEBUG"] = True
+app.debug = False
 
 # configuring db connection..
 SQLALCHEMY_DATABASE_URI = "mysql+mysqlconnector://{username}:{password}@{hostname}/{databasename}".format(
@@ -21,16 +26,18 @@ app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 app.secret_key = "My Mt.sac username"
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-class User(UserMixin):
+class User(UserMixin, db.Model):
+    __tablename__ = "users"
 
-    def __init__(self, username, password_hash):
-        self.username = username
-        self.password_hash = password_hash
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(128))
+    password_hash = db.Column(db.String(128))
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
@@ -38,31 +45,28 @@ class User(UserMixin):
     def get_id(self):
         return self.username
 
-all_users = {
-    "htorres6": User("htorres6", generate_password_hash("umber")),
-    "python": User("python", generate_password_hash("cisw24")),
-    "guest": User("guest", generate_password_hash("guest")),
-    }
-
 @login_manager.user_loader
 def load_user(user_id):
-    return all_users.get(user_id)
+    return User.query.filter_by(username=user_id).first()
 
 class Comment(db.Model):
     __tablename__ = "comments"
 
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(4096))
+    posted = db.Column(db.DateTime, default=datetime.now)
+    commenter_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    commenter = db.relationship('User', foreign_keys=commenter_id)
 
 @app.route("/", methods=["GET", "POST"])
 def index():
     if request.method == "GET":
-        return render_template("index.html", comments=Comment.query.all(), timestamp=datetime.now())
+        return render_template("index.html", comments=Comment.query.all())
 
     if not current_user.is_authenticated:
         return redirect(url_for('index'))
 
-    comment = Comment(content=request.form["contents"])
+    comment = Comment(content=request.form["contents"], commenter=current_user)
     db.session.add(comment)
     db.session.commit()
 
@@ -73,10 +77,9 @@ def login():
     if request.method == "GET":
         return render_template("login_page.html", error=False)
 
-    username = request.form["username"]
-    if username not in all_users:
+    user = load_user(request.form["username"])
+    if user is None:
         return render_template("login_page.html", error=True)
-    user = all_users[username]
 
     if not user.check_password(request.form["password"]):
         return render_template("login_page.html", error=True)

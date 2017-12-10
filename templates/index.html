@@ -3,24 +3,49 @@
 {% block body %}
 
     <div class="jumbotron text-center">
-        <h1>Welcome to Umber's FlaskApp</h1>
-        <p class="lead">This application is built on the Python Flask framework, Enjoy!..</p>
-        <p>Don't be rude, be polite, and have fun. </p><br/><br/>
+        <h1><u>Welcome to Umber's FlaskApp</u></h1><br /><br />
 
         <div class="container text-left">
-        {% for comment in comments %}
-                <div class="row">
-                    {{ comment.content }}
+            {% for comment in comments %}
+                <div class="row" style="margin-bottom: 1ex">
+                    <div>
+                        {{ comment.content }}
+                    </div>
+                    <div>
+                        <small>
+                            Posted
+                            {% if comment.posted %}
+                                {{ comment.posted.strftime("%A, %d %B %Y at %H:%M") }}
+                            {% else %}
+                                at an unknown time
+                            {% endif %}
+                            by
+                            {% if comment.commenter %}
+                                {{ comment.commenter.username }}
+                            {% else %}
+                                anonymous
+                            {% endif %}
+                        </small>
+                    </div>
                 </div>
             {% endfor %}
 
+<!--The comment input field form-->
+        {% if current_user.is_authenticated %}
             <div class="row">
                 <form action="." method="POST">
-                    <textarea class="form-control" name="contents" placeholder="Enter a comment"></textarea>
+                    <textarea name="contents" placeholder="Enter a comment" class="form-control"></textarea>
                     <input type="submit" class="btn btn-success" value="Post comment">
                 </form>
             </div>
+        {% endif %}
+<!--The comment input field form-->
+
         </div>
     </div>
 
 {% endblock %}
+
+<!--End of file-->
+
+
