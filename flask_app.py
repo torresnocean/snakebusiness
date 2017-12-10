@@ -5,9 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import login_user, LoginManager, UserMixin, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash
+import time
+import os
 
-#import time
-#import os
+
 
 app = Flask(__name__)
 sslify = SSLify(app)
@@ -66,6 +67,8 @@ def index():
     if not current_user.is_authenticated:
         return redirect(url_for('index'))
 
+    os.environ['TZ'] = 'US/Pacific'
+    time.tzset()
     comment = Comment(content=request.form["contents"], commenter=current_user)
     db.session.add(comment)
     db.session.commit()
@@ -98,18 +101,3 @@ def logout():
 
 
 # END OF FILE..
-
-
-
-#if __name__ == '__main__':
-
-
-    # else:
-    #     comment = Comment()
-    #     comment.content = request.form['fieldComment']
-    #     os.environ['TZ'] = 'US/Pacific'
-    #     time.tzset()
-    #     comment.timestamp = time.strftime("%a %b %d %Y", time.localtime()
-    #     db.session.add(comment)
-    #     db.session.commit()
-    #return get_post
